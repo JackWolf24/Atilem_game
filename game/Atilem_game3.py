@@ -60,7 +60,6 @@ class room:
             l.image = img
 
             if cheat is True:
-                print("enter2: ", enter2["state"], "enter1: ", enter1["state"])
                 main.bind("<Control_L>", self.next)
                 main.bind("<Shift_L>", self.enter)
 
@@ -69,7 +68,7 @@ class room:
                                     activeforeground="#FFFFFF")
             enter2.place(x=main.winfo_screenwidth() / 2.4, y=main.winfo_screenheight() / 1.5 + 95, anchor="w", width=80,
                          height=78)
-
+            enter1 = tkinter.Button(main)
             img = tkinter.PhotoImage(file=self.img)
             l = tkinter.Label(main, image=img)
             l.place(x=main.winfo_screenwidth() / 2, y=1, anchor="n")
@@ -129,7 +128,7 @@ class room:
                     print("1", "cheat:", cheat, len(backpack), backpack)
                     l4.destroy()
                     nxt = "equip"
-                    equip()
+
 
                 else:
                     if answer.object not in backpack and len(backpack) <= backpacksize:
@@ -174,8 +173,13 @@ class room:
         l4.destroy()
         print("l4.destroy()")
         print("nxt:", nxt)
-        var = scenes.get(nxt)
-        var()
+        try:
+            dict = scenes.get(nxt)
+            room(dict[0], dict[1], dict[2], dict[3], dict[4], dict[5], dict[6], dict[7], dict[8], dict[9], dict[10],
+                 dict[11])
+        except:
+            var = scenes.get(nxt)
+            var()
 
 
 def search(ans2, ans3):
@@ -229,47 +233,11 @@ def opening():
         nxt = "askscare"
 
 
-def askscare():
-    otxt = """Well didnt wanted to scare you, is all right? you look a little faint.
-
-                yes 
-                not at all
-                """
-    atxt = "great, I knew you were one of the brave ones, thats something i feel in ma pee"
-    atxt2 = """Come on man, stop peeing your throusers. Only the one who tries is in position of having a chance to win"""
-    atxt3 = "ok, lets go back"
-    room(otxt, atxt, atxt2, atxt3, "yes", "not", "back", None, "askready", "askscare", "opening", "1.png")
-
-
-def askready():
-    otxt = "ready to rumble? \n yes \n not at all"
-    atxt = "great, so lets prepare our equipment:"
-    atxt2 = "what are you waiting for?, well anyways only die harten kommen in den garten so lets go"
-    room(otxt, atxt, atxt2, None, "yes", "not", "back", None, "equip", "askready", "opening", "1.png")
-
-
-def equip():
-    otxt = "ok there are 10 Items you could take with you. But sadly our backpack is capeable of containing just 4 Items\n" + str(
-        items)
-    room(otxt, None, None, None, None, None, "back", None, "gotlight", None, "opening", "2.png")
-
-
 def gotlight():
     otxt = "Its pretty dark in here. could you please switch on your flashlight?"
     room(otxt, None, None, None, "back", None, None, None, "equip", "flashlight", "startroom", "3.png")
     enter1.config(text="search", command=lambda: search("flashlight", "startroom"))
 
-
-############################################################################################################
-def startroom():
-    otxt = "oh hey, the first room, 2 doors available, which one do choose? \nleft \nright"
-    atxt = "ok lets take the left one"
-    atxt2 = "ok lets go right"
-    atxt3 = "ok, lets go back"
-    room(otxt, atxt, atxt2, atxt3, "left", "right", "back", None, "l1", "gotglasses", "equip", "4.png")
-
-
-############################################################################################################
 
 def gotglasses():
     otxt = "You see that snake over there? dont look in her eyes. If you do so youll freeze to stone. sunglases might protect you, got some?"
@@ -277,28 +245,11 @@ def gotglasses():
     enter1.config(text="search", command=lambda: search("sunglasses", "r1"))
 
 
-def r1():
-    otxt = "well, now we can pass safely the snake \npass"
-    atxt = "ok lets pass"
-    atxt2 = "ok, lets go back"
-    room(otxt, atxt, atxt2, None, "pass", None, "back", None, "gotrope", None, "startroom", "11.2.png")
-
-
-############################################################################################################
 def gotrope():
     otxt = "new room. oh we have to cross a pond full of acid to get to the next door. got your rope?"
     room(otxt, None, None, None, "back", None, None, None, "r1", None, None, "12.1.png")
     enter1.config(text="search", command=lambda: search("rope", "rope"))
 
-
-def rope():
-    otxt = "ok lets spann the rope across the pond. then pass the door \npass"
-    atxt = "ok lets pass"
-    otxt2 = "ok, lets go back"
-    room(otxt, atxt, otxt2, None, "pass", None, "back", None, "troom", None, "r1", "12.2.png")
-
-
-############################################################################################################
 
 def l1():
     global way
@@ -309,47 +260,11 @@ def l1():
     atxt3 = "ok, lets go back"
     room(otxt, atxt, atxt2, atxt3, "upstairs", "door", "back", None, "upstairs", "read", "startroom", "5.png")
 
-
-############################################################################################################
-
-def upstairs():
-    otxt = "oh a scroll, ill read it to you, ready? \n\tyes \n\tno "
-    atxt = "ok ill start"
-    atxt2 = "take ya time"
-    atxt3 = "ok, lets go back"
-    room(otxt, atxt, atxt2, atxt3, "yes", "no", "back", None, "upstairsread", "upstairs", "l1", "6.png")
-
-
-def read():
-    otxt = "new room. I think this witch over there is too strong. oh a scroll, ill read it to you, ready? \n\tyes \n\tno "
-    atxt = "ok ill start"
-    atxt2 = "take ya time"
-    atxt3 = "ok, lets go back"
-    room(otxt, atxt, atxt2, atxt3, "yes", "no", "back", None, "potions", "read", "l1", "7.png")
-
-
 def upstairsread():
     global nxt
     otxt = "I suppose its a hint. Keep it in mind."
     room(otxt, None, None, None, None, "back", None, None, None, "upstairs", None, "6.1.png")
     nxt = "read"
-
-
-############################################################################################################
-
-def potions():
-    otxt = "remember the hint. \nyou could take the...: \n\t'red'\n\t'green'"
-    atxt = "take the red one"
-    atxt2 = "take the green one"
-    room(otxt, atxt, atxt2, None, "red", "green", "back", None, "prefight", "death", "l1", "7.1.png")
-
-
-def prefight():
-    otxt = "greaaaaaaat you got the right one, now youre superstrong, punch her on the nose so we can pass \nfight\n'nofight'"
-    atxt = "ok, be aware of her left hook!!"
-    atxt2 = "oh no, a pazifist, now shell kill you"
-    room(otxt, atxt, atxt2, None, "fight", "nofight", None, "back", "fight", "death", "potions", "7.2.png")
-
 
 def fight():
     global nxt
@@ -357,8 +272,6 @@ def fight():
     room(otxt, None, None, None, None, None, None, "back", None, None, "prefight", "7.3.png")
     nxt = "troom"
 
-
-############################################################################################################
 
 def troom():
     global way, accp, nxt
@@ -373,15 +286,12 @@ def troom():
     print("accp:", accp)
 
 
-############################################################################################################
-
 def victory():
     quips = ["well done",
              "great job bro.",
              "thats it.",
              "mission accomplished",
              "congrats"]
-
     room(quips[random.randint(0, len(quips) - 1)], None, None, None, None, None, None, None, None, None, None, "9.png")
     enter1.config(text="quit", command=end)
     enter2.config(text="restart", command=res)
@@ -408,31 +318,28 @@ def res():
     way = None
     opening()
 
-
-############################################################################################################
-
 scenes = {
-    "start": [None, None, None, None, None, None, None, None, "opening", None, None, "0.png"],
+    # "start": [None, None, None, None, None, None, None, None, "opening", None, None, "0.png"],
     "opening": opening,
-    "askscare": askscare,
-    "askready": askready,
-    "equip": equip,
+    "askscare": ["Well didnt wanted to scare you, is all right? you look a little faint.\nyes \nnot at all","great, I knew you were one of the brave ones, thats something i feel in ma pee","Come on man, stop peeing your throusers. Only the one who tries is in position of having a chance to win", "ok, lets go back", "yes", "not", "back", None, "askready", "askscare", "opening", "1.png"],
+    "askready": ["ready to rumble? \n yes \n not at all", "great, so lets prepare our equipment:","what are you waiting for?, well anyways only die harten kommen in den garten so lets go", None, "yes","not", "back", None, "equip", "askready", "opening", "1.png"],
+    "equip": ["ok there are 10 Items you could take with you. But sadly our backpack is capeable of containing just 4 Items\n" + str(items), None, None, None, None, None, "back", None, "gotlight", None, "opening", "2.png"],
     "gotlight": gotlight,
-    "startroom": startroom,
+    "startroom": ["oh hey, the first room, 2 doors available, which one do choose? \nleft \nright","ok lets take the left one", "ok lets go right", "ok, lets go back", "left", "right", "back", None,"l1", "gotglasses", "equip", "4.png"],
     "l1": l1,
     "gotglasses": gotglasses,
-    "r1": r1,
+    "r1": ["well, now we can pass safely the snake \npass", "ok lets pass", "ok, lets go back", None, "pass", None, "back", None, "gotrope", None, "startroom", "11.2.png"],
     "gotrope": gotrope,
-    "rope": rope,
-    "read": read,
-    "potions": potions,
-    "upstairs": upstairs,
+    "rope": ["ok lets spann the rope across the pond. then pass the door \npass",  "ok lets pass", "ok, lets go back", None, "pass", None, "back", None, "troom", None, "r1", "12.2.png"],
+    "read": ["new room. I think this witch over there is too strong. oh a scroll, ill read it to you, ready? \n\tyes \n\tno ",  "ok ill start", "take ya time", "ok, lets go back", "yes", "no", "back", None, "potions", "read", "l1", "7.png"],
+    "potions": ["remember the hint. \nyou could take the...: \n\t'red'\n\t'green'", "take the red one", "take the green one", None, "red", "green", "back", None, "prefight", "death", "l1", "7.1.png"],
+    "upstairs": ["oh a scroll, ill read it to you, ready? \n\tyes \n\tno ", "ok ill start", "take ya time", "ok, lets go back", "yes", "no", "back", None, "upstairsread", "upstairs", "l1", "6.png"],
     "upstairsread": upstairsread,
     "troom": troom,
-    "prefight": prefight,
+    "prefight": ["greaaaaaaat you got the right one, now youre superstrong, punch her on the nose so we can pass \nfight\n'nofight'", "ok, be aware of her left hook!!", "oh no, a pazifist, now shell kill you", None, "fight", "nofight", None, "back", "fight", "death", "potions", "7.2.png"],
     "fight": fight,
     "death": death,
-    # "victory": victory(),
+    "victory": victory(),
 }
 start()
 main.mainloop()

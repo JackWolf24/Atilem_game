@@ -268,7 +268,7 @@ def l2():
             print("hm theres no recation I think we got the right one")
             goal()
             break
-        elif answer5.object == "back":
+        elif answer6.object == "back":
             l1()
         else:
             print("did you learn to speak in proper words???, seems not like")

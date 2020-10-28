@@ -26,77 +26,77 @@ class room:
         self.dir = dir
         self.startscreen = startscreen
         self.cheat = cheat
-        backpacksize = 3
+        self.backpacksize = 3
         main.title("ATILEM-FORGOTTEN TREASURES")
         main.geometry("{0}x{1}+-8+0".format(main.winfo_screenwidth(), main.winfo_screenheight()))
         main.configure(bg="#000000")
 
-        global t1, enter2, l4, enter1,l
 
         if self.startscreen is False:
-            l2 = tkinter.Label(main, text="enter answer here:", bg="#000000", fg="#FFFFFF", font=("Courier", 15))
-            l2.place(x=main.winfo_screenwidth() / 10, y=main.winfo_screenheight() / 2 + 60, anchor="w")
+            self.l2 = tkinter.Label(main, text="enter answer here:", bg="#000000", fg="#FFFFFF", font=("Courier", 15))
+            self.l2.place(x=main.winfo_screenwidth() / 10, y=main.winfo_screenheight() / 2 + 60, anchor="w")
 
-            t1 = tkinter.Text(main, width=50, height=10, bg="#FFFFFF", fg="#000000")
-            t1.place(x=main.winfo_screenwidth() / 10, y=main.winfo_screenheight() / 1.5 + 50, anchor="w")
+            self.t1 = tkinter.Text(main, width=50, height=10, bg="#FFFFFF", fg="#000000")
+            self.t1.place(x=main.winfo_screenwidth() / 10, y=main.winfo_screenheight() / 1.5 + 50, anchor="w")
 
-            enter1 = tkinter.Button(main, text="enter", command=lambda: self.enter(backpacksize), font=("Courier", 10), activeforeground="#FFFFFF")
-            enter1.place(x=main.winfo_screenwidth() / 2.4, y=main.winfo_screenheight() / 1.5 + 10, anchor="w", width=80, height=78)
+            self.enter1 = tkinter.Button(main, text="enter", command=self.enter, font=("Courier", 10), activeforeground="#FFFFFF")
+            self.enter1.place(x=main.winfo_screenwidth() / 2.4, y=main.winfo_screenheight() / 1.5 + 10, anchor="w", width=80, height=78)
 
-            enter2 = tkinter.Button(main, text="next", command=lambda: self.next(backpacksize), font=("Courier", 10), activeforeground="#FFFFFF")
-            enter2.place(x=main.winfo_screenwidth() / 2.4, y=main.winfo_screenheight() / 1.5 + 95, anchor="w", width=80, height=78)
+            self.enter2 = tkinter.Button(main, text="next", command=self.next, font=("Courier", 10), activeforeground="#FFFFFF")
+            self.enter2.place(x=main.winfo_screenwidth() / 2.4, y=main.winfo_screenheight() / 1.5 + 95, anchor="w", width=80, height=78)
 
-            l4 = tkinter.Label(main, text=self.otxt, bg="#000000", fg="#FFFFFF", font=("Courier", 15), wraplength=650)
-            l4.place(x=main.winfo_screenwidth() / 2, y=main.winfo_screenheight() / 1.5 + 30, anchor="w")
+            self.l4 = tkinter.Label(main, text=self.otxt, bg="#000000", fg="#FFFFFF", font=("Courier", 15), wraplength=650)
+            self.l4.place(x=main.winfo_screenwidth() / 2, y=main.winfo_screenheight() / 1.5 + 30, anchor="w")
 
             img = tkinter.PhotoImage(file=self.img)
-            l.config(image=img)
-            l.image = img
+            self.l = tkinter.Label(main, image=img)
+            self.l.place(x=main.winfo_screenwidth() / 2, y=1, anchor="n")
+            self.l.image = img
             print("dir", self.dir)
             if "cheat" in scenes.get(path[len(path)-1]):
                 main.bind("<Control_L>", self.next)
                 main.bind("<Shift_L>", self.enter)
 
             if self.dir is "startroom":
-                enter1.config(text="search", command=lambda: self.search("flashlight", "startroom"))
+                self.enter1.config(text="search", command=lambda: self.search("flashlight", "startroom"))
 
             elif self.dir is "r1":
-                enter1.config(text="search", command=lambda: self.search("sunglasses", "r1"))
+                self.enter1.config(text="search", command=lambda: self.search("sunglasses", "r1"))
 
             elif self.dir is "rope":
-                enter1.config(text="search", command=lambda: self.search("rope", "rope"))
+                self.enter1.config(text="search", command=lambda: self.search("rope", "rope"))
 
             elif path[len(path)-1] == "victory" and "troom" in path or path[len(path)-1] == "death": #if you were in the treasure room and get back to first stage victory screen appear
-                   enter1.config(text="quit", command=self.end)
-                   enter2.config(text="restart", command= self.res)
+                self.enter1.config(text="quit", command=self.end)
+                self.enter2.config(text="restart", command= self.res)
         else:
-            enter2 = tkinter.Button(main, text="start", command=lambda: self.next(backpacksize), font=("Courier", 10),
+            self.enter2 = tkinter.Button(main, text="start", command=lambda: self.next(self.backpacksize), font=("Courier", 10),
                                     activeforeground="#FFFFFF")
-            enter2.place(x=main.winfo_screenwidth() / 2.4, y=main.winfo_screenheight() / 1.5 + 95, anchor="w", width=80,
+            self.enter2.place(x=main.winfo_screenwidth() / 2.4, y=main.winfo_screenheight() / 1.5 + 95, anchor="w", width=80,
                          height=78)
 
-            enter1 = tkinter.Button(main)
+            self.enter1 = tkinter.Button(main)
 
             img = tkinter.PhotoImage(file=self.img)
-            l = tkinter.Label(main, image=img)
-            l.place(x=main.winfo_screenwidth() / 2, y=1, anchor="n")
-            l.image = img
+            self.l = tkinter.Label(main, image=img)
+            self.l.place(x=main.winfo_screenwidth() / 2, y=1, anchor="n")
+            self.l.image = img
 
-            l4 = tkinter.Label(main)
+            self.l4 = tkinter.Label(main)
 
-    def enter(self, backpacksize, _event=None):
+    def enter(self, _event=None):
         try:
-            lexicon.lexicon(t1.get("1.0", "end-1c"))
+            lexicon.lexicon(self.t1.get("1.0", "end-1c"))
             print(lexicon.sentence)
             answer = parser2.parse_sentence(lexicon.sentence)
 
             if answer.object == self.key:
-                l4.config(text=self.atxt)
+                self.l4.config(text=self.atxt)
                 if self.ans:
                     self.dir = self.ans
 
             elif answer.object == self.key2:
-                l4.config(text=self.atxt2)
+                self.l4.config(text=self.atxt2)
                 if path[len(path) - 1] is "troom":
                     if "fight" in path: self.dir = "potions"
                     elif "rope" in path: self.dir = "rope"
@@ -105,7 +105,7 @@ class room:
                     self.dir = self.ans2
 
             elif answer.object == self.key3:
-                l4.config(text=self.atxt3)
+                self.l4.config(text=self.atxt3)
                 if self.ans3:
                     self.dir = self.ans3
 
@@ -125,21 +125,21 @@ class room:
                         backpack.extend(["water", "flashlight", "apples"])
 
                     print("1", "cheat:", self.cheat,"backpack:", len(backpack), backpack)
-                    l4.config(text=f"You cheated:{backpack}")
+                    self.l4.config(text=f"You cheated:{backpack}")
                     self.dir = "equip"
 
 
                 else:
-                    if answer.object not in backpack and len(backpack) <= backpacksize and answer.object in items:
+                    if answer.object not in backpack and len(backpack) <= self.backpacksize and answer.object in items:
                         backpack.append(answer.object)
                         print("append")
-                        l4.config(text=f"great decision, you got:{backpack}")
+                        self.l4.config(text=f"great decision, you got:{backpack}")
 
-                    elif answer.object in backpack and len(backpack) <= backpacksize:
-                        l4.config(text="Its not sensible to carry the same thing around twice. choose another item.")
+                    elif answer.object in backpack and len(backpack) <= self.backpacksize:
+                        self.l4.config(text="Its not sensible to carry the same thing around twice. choose another item.")
 
-                    if "troom" not in path and len(backpack) == backpacksize:
-                        l4.config(text=f"your backpack is full, so lets step in. You chose:{backpack}")
+                    if "troom" not in path and len(backpack) == self.backpacksize:
+                        self.l4.config(text=f"your backpack is full, so lets step in. You chose:{backpack}")
                         print(len(backpack), backpack, "0: full backpack")
                         self.dir = "gotlight"
 
@@ -148,20 +148,19 @@ class room:
             print("TypeError")
             txtelse = """did you learn to speak in proper words???,
                  seems not like"""
-            l4.config(text=txtelse)
+            self.l4.config(text=txtelse)
 
 
-    def next(self, backpacksize, _event=None):
-        global l4, enter1, enter2
+    def next(self, _event=None):
         print(self.dir)
         try:
-            if len(backpack) != backpacksize and self.dir == "gotlight":  #sends you back to equip if your bckpack is not yet full
+            if len(backpack) != self.backpacksize and self.dir == "gotlight":  #sends you back to equip if your bckpack is not yet full
                 self.dir = "equip"
 
             if self.dir == "death":
                 pass
             else:
-                l4.destroy()
+                self.l4.destroy()
 
             if self.dir is "opening" and "troom" in path: #if you was in the treasure room and get back to first stage victory screen appear
                 self.dir = "victory"
@@ -178,28 +177,27 @@ class room:
 
 
     def search(self, ans2, ans3): #looks up your backpack for the desired item
-        global l4
-        l4.destroy()
-        l4 = tkinter.Label(main, bg="#000000", fg="#FFFFFF", font=("Courier", 15), wraplength=650)
-        l4.place(x=main.winfo_screenwidth() / 2, y=main.winfo_screenheight() / 1.5 + 30, anchor="w")
+        self.l4.destroy()
+        self.l4 = tkinter.Label(main, bg="#000000", fg="#FFFFFF", font=("Courier", 15), wraplength=650)
+        self.l4.place(x=main.winfo_screenwidth() / 2, y=main.winfo_screenheight() / 1.5 + 30, anchor="w")
         if ans2 in backpack:
             print("there", ans3, ans2)
-            l4.config(text="peeeew, youre a genius. You took it with you")
+            self.l4.config(text="peeeew, youre a genius. You took it with you")
             self.dir = ans3
 
         elif ans2 not in backpack:
             print("not there", ans3, ans2)
             if ans2 == "flashlight":
                 backpack.clear()
-                l4.config(text="maaan, you forgot it, we have to go retry")
+                self.l4.config(text="maaan, you forgot it, we have to go retry")
                 self.dir = "equip"
 
             elif ans2 == "rope":
-                l4.config(text="you try to cross the pond without any help. you stagger, you fall, you get disolved")
+                self.l4.config(text="you try to cross the pond without any help. you stagger, you fall, you get disolved")
                 self.dir = "death"
 
             elif ans2 == "sunglasses":
-                l4.config(text="youve forgott your sund glasses. Now youre set to stone")
+                self.l4.config(text="youve forgott your sund glasses. Now youre set to stone")
                 self.dir = "death"
 
 
@@ -209,7 +207,7 @@ class room:
 
     def res(self):
         for k in scenes.keys(): scenes.get(k)[len(scenes.get(k)) - 1] = "honest"
-        l4.destroy()
+        self.l4.destroy()
         backpack.clear()
         self.dir = "opening"
         self.next(3)

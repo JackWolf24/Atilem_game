@@ -6,6 +6,7 @@ path = ["start"]
 backpack = []
 items = ["rope", "life jacket", "sunglasses", "key", "antidote", "flashlight", "water", "apples",
          "raincoat", "cardgame"]
+quips = ["well done", "great job bro.", "thats it.", "mission accomplished", "congrats"]
 
 
 class room:
@@ -30,9 +31,9 @@ class room:
         main.geometry("{0}x{1}+-8+0".format(main.winfo_screenwidth(), main.winfo_screenheight()))
         main.configure(bg="#000000")
 
-        global t1, enter2, l4, enter1
+        global t1, enter2, l4, enter1,l
+
         if self.startscreen is False:
-            global l4
             l2 = tkinter.Label(main, text="enter answer here:", bg="#000000", fg="#FFFFFF", font=("Courier", 15))
             l2.place(x=main.winfo_screenwidth() / 10, y=main.winfo_screenheight() / 2 + 60, anchor="w")
 
@@ -49,10 +50,9 @@ class room:
             l4.place(x=main.winfo_screenwidth() / 2, y=main.winfo_screenheight() / 1.5 + 30, anchor="w")
 
             img = tkinter.PhotoImage(file=self.img)
-            l = tkinter.Label(main, image=img)
-            l.place(x=main.winfo_screenwidth() / 2, y=1, anchor="n")
+            l.config(image=img)
             l.image = img
-
+            print("dir", self.dir)
             if "cheat" in scenes.get(path[len(path)-1]):
                 main.bind("<Control_L>", self.next)
                 main.bind("<Shift_L>", self.enter)
@@ -66,13 +66,9 @@ class room:
             elif self.dir is "rope":
                 enter1.config(text="search", command=lambda: self.search("rope", "rope"))
 
-            elif self.dir is "troom":
-                print("5")
-                if "fight" in path:
-                    self.ans2 = "potions"
-                elif "rope" in path:
-                    self.ans2 = "rope"
-
+            elif path[len(path)-1] == "victory" and "troom" in path or path[len(path)-1] == "death": #if you were in the treasure room and get back to first stage victory screen appear
+                   enter1.config(text="quit", command=self.end)
+                   enter2.config(text="restart", command= self.res)
         else:
             enter2 = tkinter.Button(main, text="start", command=lambda: self.next(backpacksize), font=("Courier", 10),
                                     activeforeground="#FFFFFF")
@@ -87,7 +83,6 @@ class room:
             l.image = img
 
             l4 = tkinter.Label(main)
-            l4.place(x=main.winfo_screenwidth() / 2, y=main.winfo_screenheight() / 1.5 + 30, anchor="w")
 
     def enter(self, backpacksize, _event=None):
         try:
@@ -102,7 +97,11 @@ class room:
 
             elif answer.object == self.key2:
                 l4.config(text=self.atxt2)
-                if self.ans2:
+                if path[len(path) - 1] is "troom":
+                    if "fight" in path: self.dir = "potions"
+                    elif "rope" in path: self.dir = "rope"
+
+                elif self.ans2:
                     self.dir = self.ans2
 
             elif answer.object == self.key3:
@@ -118,7 +117,6 @@ class room:
                 elif answer.object == "cheat" or answer.object == "loose":
                     for k in scenes.keys():
                         scenes.get(k)[len(scenes.get(k))-1] = "cheat"
-                        #print(scenes.get(k))
 
                     self.cheat = True
                     if answer.object == "cheat":
@@ -154,7 +152,8 @@ class room:
 
 
     def next(self, backpacksize, _event=None):
-        global l4
+        global l4, enter1, enter2
+        print(self.dir)
         try:
             if len(backpack) != backpacksize and self.dir == "gotlight":  #sends you back to equip if your bckpack is not yet full
                 self.dir = "equip"
@@ -164,22 +163,19 @@ class room:
             else:
                 l4.destroy()
 
+            if self.dir is "opening" and "troom" in path: #if you was in the treasure room and get back to first stage victory screen appear
+                self.dir = "victory"
+
             dict = scenes.get(self.dir)
-            room(dict[0], dict[1], dict[2], dict[3], dict[4], dict[5], dict[6], dict[7], dict[8], dict[9], dict[10], dict[11], dict[12], dict[13], dict[14])    #creates room
             path.append(self.dir)
             print("path:", path)
 
-            if path[len(path)-1] == "death":
-                enter1.config(text="quit", command=self.end)
-                enter2.config(text="restart", command= self.res)
-
-            elif path[len(path)-1] is "opening": #if you were in the treasure room and get back to first stage victory screen appears
-                if "troom" in path:
-                    self.dir = "victory"
         except:
             print("ERORRRR")    #if you type nothing the last scene loads
             dict = scenes.get(path[len(path)-1])
-            room(dict[0], dict[1], dict[2], dict[3], dict[4], dict[5], dict[6], dict[7], dict[8], dict[9], dict[10], dict[11], dict[12], dict[13], dict[14])
+
+        room(dict[0], dict[1], dict[2], dict[3], dict[4], dict[5], dict[6], dict[7], dict[8], dict[9], dict[10], dict[11], dict[12], dict[13], dict[14])
+
 
     def search(self, ans2, ans3): #looks up your backpack for the desired item
         global l4
@@ -217,7 +213,6 @@ class room:
         backpack.clear()
         self.dir = "opening"
         self.next(3)
-
 scenes = {
     "start": [None, None, None, None, None, None, None, None, "opening", None, None, "0.png", "opening", True, "honest"],
     "opening": ["Hey Im Gorge and Im your companion on this journey of trying to find the treasure of Atillem, an old society extincted several hundrets years ago.Today we prepare for the first atempt of finding the treasure in that scary cave over there. I heard of many brave man entering but close to non came back alive.", None, None, None, None, None, None, None, "askscare", None, None, "1.png", "askscare", False, "honest"],
@@ -239,7 +234,7 @@ scenes = {
     "prefight": ["greaaaaaaat you got the right one, now youre superstrong, punch her on the nose so we can pass \nfight\n'nofight'", "ok, be aware of her left hook!!", "oh no, a pazifist, now shell kill you", None, "fight", "nofight", None, "back", "fight", "death", "potions", "7.2.png", None, False, "honest"],
     "fight": ["nice one, now we can pass", None, None, None, None, None, None, "back", None, None, "prefight", "7.3.png", "troom", False, "honest"],
     "death": [None, None, None, None, None, None, None, None, None, None, None, "10.png", None, False, "honest"],
-    "victory": [random.randint(0, len(["well done", "great job bro.", "thats it.", "mission accomplished", "congrats"]) - 1), None, None, None, None, None, None, None, None, None, None, "9.png", None, False, "honest"],
+    "victory": [quips[random.randint(0, len(quips) - 1)], None, None, None, None, None, None, None, None, None, None, "9.png", None, False, "honest"],
 }
 dict = scenes.get("start")
 room(dict[0], dict[1], dict[2], dict[3], dict[4], dict[5], dict[6], dict[7], dict[8], dict[9], dict[10], dict[11], dict[12], dict[13], dict[14])

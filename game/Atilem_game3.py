@@ -4,8 +4,8 @@ import parser2, lexicon
 main = tkinter.Tk()
 path = ["start"]
 backpack = []
-items = ["30m rope", "life jacket", "sunglasses", "key", "anti toxic potion", "flashlight", "5L of water", "3 apples",
-         "raincoat", "game of cards"]
+items = ["rope", "life jacket", "sunglasses", "key", "antidote", "flashlight", "water", "apples",
+         "raincoat", "cardgame"]
 
 
 class room:
@@ -24,7 +24,7 @@ class room:
         self.img = img
         self.dir = dir
         self.startscreen = startscreen
-        self.cheat =cheat
+        self.cheat = cheat
         backpacksize = 3
         main.title("ATILEM-FORGOTTEN TREASURES")
         main.geometry("{0}x{1}+-8+0".format(main.winfo_screenwidth(), main.winfo_screenheight()))
@@ -39,18 +39,13 @@ class room:
             t1 = tkinter.Text(main, width=50, height=10, bg="#FFFFFF", fg="#000000")
             t1.place(x=main.winfo_screenwidth() / 10, y=main.winfo_screenheight() / 1.5 + 50, anchor="w")
 
-            enter1 = tkinter.Button(main, text="enter", command=lambda: self.enter(backpacksize), font=("Courier", 10),
-                                    activeforeground="#FFFFFF")
-            enter1.place(x=main.winfo_screenwidth() / 2.4, y=main.winfo_screenheight() / 1.5 + 10, anchor="w", width=80,
-                         height=78)
+            enter1 = tkinter.Button(main, text="enter", command=lambda: self.enter(backpacksize), font=("Courier", 10), activeforeground="#FFFFFF")
+            enter1.place(x=main.winfo_screenwidth() / 2.4, y=main.winfo_screenheight() / 1.5 + 10, anchor="w", width=80, height=78)
 
-            enter2 = tkinter.Button(main, text="next", command=self.next, font=("Courier", 10),
-                                    activeforeground="#FFFFFF")
-            enter2.place(x=main.winfo_screenwidth() / 2.4, y=main.winfo_screenheight() / 1.5 + 95, anchor="w", width=80,
-                         height=78)
+            enter2 = tkinter.Button(main, text="next", command=lambda: self.next(backpacksize), font=("Courier", 10), activeforeground="#FFFFFF")
+            enter2.place(x=main.winfo_screenwidth() / 2.4, y=main.winfo_screenheight() / 1.5 + 95, anchor="w", width=80, height=78)
 
-            l4 = tkinter.Label(main, text=self.otxt, bg="#000000", fg="#FFFFFF",
-                               font=("Courier", 15), wraplength=650)
+            l4 = tkinter.Label(main, text=self.otxt, bg="#000000", fg="#FFFFFF", font=("Courier", 15), wraplength=650)
             l4.place(x=main.winfo_screenwidth() / 2, y=main.winfo_screenheight() / 1.5 + 30, anchor="w")
 
             img = tkinter.PhotoImage(file=self.img)
@@ -58,23 +53,18 @@ class room:
             l.place(x=main.winfo_screenwidth() / 2, y=1, anchor="n")
             l.image = img
 
-            if cheat is True:
+            if "cheat" in scenes.get(path[len(path)-1]):
                 main.bind("<Control_L>", self.next)
-                main.bind("<Shift_L>",lambda: self.enter(backpacksize))
-
+                main.bind("<Shift_L>", self.enter)
 
             if self.dir is "startroom":
-                enter1.config(text="search", command=lambda: search("flashlight", "startroom"))
+                enter1.config(text="search", command=lambda: self.search("flashlight", "startroom"))
 
             elif self.dir is "r1":
-                enter1.config(text="search", command=lambda: search("sunglasses", "r1"))
+                enter1.config(text="search", command=lambda: self.search("sunglasses", "r1"))
 
             elif self.dir is "rope":
-                enter1.config(text="search", command=lambda: search("rope", "rope"))
-
-            elif self.dir is "victory" or self.dir is "death":
-                enter1.config(text="quit", command=end)
-                enter2.config(text="restart", command= res)
+                enter1.config(text="search", command=lambda: self.search("rope", "rope"))
 
             elif self.dir is "troom":
                 print("5")
@@ -84,7 +74,7 @@ class room:
                     self.ans2 = "rope"
 
         else:
-            enter2 = tkinter.Button(main, text="start", command=self.next, font=("Courier", 10),
+            enter2 = tkinter.Button(main, text="start", command=lambda: self.next(backpacksize), font=("Courier", 10),
                                     activeforeground="#FFFFFF")
             enter2.place(x=main.winfo_screenwidth() / 2.4, y=main.winfo_screenheight() / 1.5 + 95, anchor="w", width=80,
                          height=78)
@@ -100,48 +90,49 @@ class room:
             l4.place(x=main.winfo_screenwidth() / 2, y=main.winfo_screenheight() / 1.5 + 30, anchor="w")
 
     def enter(self, backpacksize, _event=None):
-        print("enter")
         try:
             lexicon.lexicon(t1.get("1.0", "end-1c"))
             print(lexicon.sentence)
             answer = parser2.parse_sentence(lexicon.sentence)
 
             if answer.object == self.key:
-                print("1", self.key)
                 l4.config(text=self.atxt)
                 if self.ans:
                     self.dir = self.ans
 
             elif answer.object == self.key2:
-                print("2", self.key2)
                 l4.config(text=self.atxt2)
                 if self.ans2:
                     self.dir = self.ans2
 
             elif answer.object == self.key3:
-                print("3", self.key3)
                 l4.config(text=self.atxt3)
                 if self.ans3:
                     self.dir = self.ans3
 
             elif answer.object:
                 if answer.object == "back":
-                    print("4 back")
                     if self.dir == "nofight" or self.dir is "prefight":
                         self.dir = "read"
 
-                elif answer.object == "cheat":
-                    for k in scenes.keys(): scenes.get(k)[len(scenes.get(k))-1] = True
+                elif answer.object == "cheat" or answer.object == "loose":
+                    for k in scenes.keys():
+                        scenes.get(k)[len(scenes.get(k))-1] = "cheat"
+                        #print(scenes.get(k))
 
                     self.cheat = True
-                    backpack.extend(["sunglasses", "flashlight", "rope"])
-                    print("1", "cheat:", self.cheat, len(backpack), backpack)
-                    l4.destroy()
+                    if answer.object == "cheat":
+                        backpack.extend(["sunglasses", "flashlight", "rope"])
+                    else:
+                        backpack.extend(["water", "flashlight", "apples"])
+
+                    print("1", "cheat:", self.cheat,"backpack:", len(backpack), backpack)
+                    l4.config(text=f"You cheated:{backpack}")
                     self.dir = "equip"
 
 
                 else:
-                    if answer.object not in backpack and len(backpack) <= backpacksize:
+                    if answer.object not in backpack and len(backpack) <= backpacksize and answer.object in items:
                         backpack.append(answer.object)
                         print("append")
                         l4.config(text=f"great decision, you got:{backpack}")
@@ -154,112 +145,101 @@ class room:
                         print(len(backpack), backpack, "0: full backpack")
                         self.dir = "gotlight"
 
-            else:
-                print("else")
-                txtelse = """did you learn to speak in proper words???,
-                     seems not like"""
-                l4.config(text=txtelse)
-
-
 
         except TypeError:
             print("TypeError")
-            print(len(backpack), self.cheat)
-            if len(backpack) == backpacksize:
-                if self.cheat == True and self.dir is "equip":
-                    l4.config(text=f"your backpack is full, so lets step in. You cheated:{backpack}")
-                    print(len(backpack), backpack, "3: already full backpack")
-                    self.dir = "gotlight"
-
-            else:
-                txtelse = """did you learn to speak in proper words???,
-                     seems not like"""
-                #l4.config(text=txtelse)
+            txtelse = """did you learn to speak in proper words???,
+                 seems not like"""
+            l4.config(text=txtelse)
 
 
-
-    def next(self, _event=None):
+    def next(self, backpacksize, _event=None):
         global l4
-        l4.destroy()
         try:
-            if self.dir is "opening":
-                print("0")
-                if "troom" in path:
-                    self.dir = "victory"
+            if len(backpack) != backpacksize and self.dir == "gotlight":  #sends you back to equip if your bckpack is not yet full
+                self.dir = "equip"
 
+            if self.dir == "death":
+                pass
+            else:
+                l4.destroy()
+
+            dict = scenes.get(self.dir)
+            room(dict[0], dict[1], dict[2], dict[3], dict[4], dict[5], dict[6], dict[7], dict[8], dict[9], dict[10], dict[11], dict[12], dict[13], dict[14])    #creates room
             path.append(self.dir)
             print("path:", path)
 
+            if path[len(path)-1] == "death":
+                enter1.config(text="quit", command=self.end)
+                enter2.config(text="restart", command= self.res)
+
+            elif path[len(path)-1] is "opening": #if you were in the treasure room and get back to first stage victory screen appears
+                if "troom" in path:
+                    self.dir = "victory"
         except:
-            print("ERORRRR")
-            self.dir = path[len(path)-1]
-        dict = scenes.get(self.dir)
-        #print(dict)
-        room(dict[0], dict[1], dict[2], dict[3], dict[4], dict[5], dict[6], dict[7], dict[8], dict[9], dict[10], dict[11], dict[12], dict[13], dict[14])
+            print("ERORRRR")    #if you type nothing the last scene loads
+            dict = scenes.get(path[len(path)-1])
+            room(dict[0], dict[1], dict[2], dict[3], dict[4], dict[5], dict[6], dict[7], dict[8], dict[9], dict[10], dict[11], dict[12], dict[13], dict[14])
 
-def search(ans2, ans3):
-    global l4
-    if ans2 in backpack:
+    def search(self, ans2, ans3): #looks up your backpack for the desired item
+        global l4
         l4.destroy()
-        print("da", ans3, ans2)
-        l4 = tkinter.Label(main, text="peeeew, youre a genius. You took it with you", bg="#000000", fg="#FFFFFF",
-                           font=("Courier", 15), wraplength=650)
+        l4 = tkinter.Label(main, bg="#000000", fg="#FFFFFF", font=("Courier", 15), wraplength=650)
         l4.place(x=main.winfo_screenwidth() / 2, y=main.winfo_screenheight() / 1.5 + 30, anchor="w")
-        room.dir = ans3
+        if ans2 in backpack:
+            print("there", ans3, ans2)
+            l4.config(text="peeeew, youre a genius. You took it with you")
+            self.dir = ans3
 
-    elif ans2 not in backpack:
+        elif ans2 not in backpack:
+            print("not there", ans3, ans2)
+            if ans2 == "flashlight":
+                backpack.clear()
+                l4.config(text="maaan, you forgot it, we have to go retry")
+                self.dir = "equip"
+
+            elif ans2 == "rope":
+                l4.config(text="you try to cross the pond without any help. you stagger, you fall, you get disolved")
+                self.dir = "death"
+
+            elif ans2 == "sunglasses":
+                l4.config(text="youve forgott your sund glasses. Now youre set to stone")
+                self.dir = "death"
+
+
+    def end(self):
+        main.destroy()
+
+
+    def res(self):
+        for k in scenes.keys(): scenes.get(k)[len(scenes.get(k)) - 1] = "honest"
         l4.destroy()
-        print("nix da", ans3, ans2)
-        l4 = tkinter.Label(main, text="maaan, you forgot it, we have to go retry", bg="#000000", fg="#FFFFFF",
-                           font=("Courier", 15), wraplength=650)
-        l4.place(x=main.winfo_screenwidth() / 2, y=main.winfo_screenheight() / 1.5 + 30, anchor="w")
-
-        if ans2 == "flashlight":
-            backpack.clear()
-            room.dir = "equip"
-
-        elif ans2 == "rope":
-            l4.config(text="you got disolved")
-            room.dir = "death"
-
-        elif ans2 == "sunglasses":
-            l4.config(text="youre set to stone")
-            room.dir = "death"
-
-
-def end():
-    main.destroy()
-
-
-def res():
-    for k in scenes.keys(): scenes.get(k)[len(scenes.get(k)) - 1] = False
-    l4.destroy()
-    backpack.clear()
-    path.clear()
-    room.dir = "opening"
+        backpack.clear()
+        self.dir = "opening"
+        self.next(3)
 
 scenes = {
-    "start": [None, None, None, None, None, None, None, None, "opening", None, None, "0.png", "opening", True, None],
-    "opening": ["Hey Im Gorge and Im your companion on this journey of trying to find the treasure of Atillem, an old society extincted several hundrets years ago.Today we prepare for the first atempt of finding the treasure in that scary cave over there. I heard of many brave man entering but close to non came back alive.", None, None, None, None, None, None, None, "askscare", None, None, "1.png", "askscare", False, None],
-    "askscare": ["Well didnt wanted to scare you, is all right? you look a little faint.\nyes \nnot at all","great, I knew you were one of the brave ones, thats something i feel in ma pee","Come on man, stop peeing your throusers. Only the one who tries is in position of having a chance to win", "ok, lets go back", "yes", "not", "back", None, "askready", "askscare", "opening", "1.png", None, False, None],
-    "askready": ["ready to rumble? \n yes \n not at all", "great, so lets prepare our equipment:","what are you waiting for?, well anyways only die harten kommen in den garten so lets go", None, "yes","not", "back", None, "equip", "askready", "opening", "1.png", None, False, None],
-    "equip": ["ok there are 10 Items you could take with you. But sadly our backpack is capeable of containing just 4 Items\n" + str(items), None, None, None, None, None, "back", None, "gotlight", None, "opening", "2.png", "gotlight", False, None],
-    "gotlight": ["Its pretty dark in here. could you please switch on your flashlight?", None, None, None, "back", None, None, None, "equip", "flashlight", "startroom", "3.png", "startroom", False, None],
-    "startroom": ["oh hey, the first room, 2 doors available, which one do choose? \nleft \nright","ok lets take the left one", "ok lets go right", "ok, lets go back", "left", "right", "back", None,"l1", "gotglasses", "equip", "4.png", None, False, None],
-    "l1": ["oh a new room, stairs and a door, hm but where to go? \nstairs \nportal", "ok lets go upstairs", "ok lets enter the portal", "ok, lets go back", "upstairs", "door", "back", None, "upstairs", "read", "startroom", "5.png", None, False, None],
-    "gotglasses": ["You see that snake over there? dont look in her eyes. If you do so youll freeze to stone. sunglases might protect you, got some?", None, None, None, "back", None, None, None, "startroom", None, None, "11.png", "r1", False, None],
-    "r1": ["well, now we can pass safely the snake \npass", "ok lets pass", "ok, lets go back", None, "pass", None, "back", None, "gotrope", None, "startroom", "11.2.png", None, False, None],
-    "gotrope": ["new room. oh we have to cross a pond full of acid to get to the next door. got your rope?", None, None, None, "back", None, None, None, "r1", None, None, "12.1.png", "rope", False, None],
-    "rope": ["ok lets spann the rope across the pond. then pass the door \npass",  "ok lets pass", "ok, lets go back", None, "pass", None, "back", None, "troom", None, "r1", "12.2.png", None, False, None],
-    "read": ["new room. I think this witch over there is too strong. oh a scroll, ill read it to you, ready? \n\tyes \n\tno ",  "ok ill start", "take ya time", "ok, lets go back", "yes", "no", "back", None, "potions", "read", "l1", "7.png", None, False, None],
-    "potions": ["remember the hint. \nyou could take the...: \n\t'red'\n\t'green'", "take the red one", "take the green one", None, "red", "green", "back", None, "prefight", "death", "l1", "7.1.png", None, False, None],
-    "upstairs": ["oh a scroll, ill read it to you, ready? \n\tyes \n\tno ", "ok ill start", "take ya time", "ok, lets go back", "yes", "no", "back", None, "upstairsread", "upstairs", "l1", "6.png", None, False, None],
-    "upstairsread": ["I suppose its a hint. Keep it in mind.", None, None, None, None, "back", None, None, None, "upstairs", None, "6.1.png", "read", False, None],
-    "troom": ["oh wow the treasure camber, take as much as you can. we have to bring it safely outside the cave to accomplish our mission\nback", None, "ok lets go back", None, None, "back", None, None, None, None, None, "8.png", None, False, None],
-    "prefight": ["greaaaaaaat you got the right one, now youre superstrong, punch her on the nose so we can pass \nfight\n'nofight'", "ok, be aware of her left hook!!", "oh no, a pazifist, now shell kill you", None, "fight", "nofight", None, "back", "fight", "death", "potions", "7.2.png", None, False, None],
-    "fight": ["nice one, now we can pass", None, None, None, None, None, None, "back", None, None, "prefight", "7.3.png", "troom", False, None],
-    "death": [None, None, None, None, None, None, None, None, None, None, None, "10.png", None, False, None],
-    "victory": [random.randint(0, len(["well done", "great job bro.", "thats it.", "mission accomplished", "congrats"]) - 1), None, None, None, None, None, None, None, None, None, None, "9.png", None, False, None],
+    "start": [None, None, None, None, None, None, None, None, "opening", None, None, "0.png", "opening", True, "honest"],
+    "opening": ["Hey Im Gorge and Im your companion on this journey of trying to find the treasure of Atillem, an old society extincted several hundrets years ago.Today we prepare for the first atempt of finding the treasure in that scary cave over there. I heard of many brave man entering but close to non came back alive.", None, None, None, None, None, None, None, "askscare", None, None, "1.png", "askscare", False, "honest"],
+    "askscare": ["Well didnt wanted to scare you, is all right? you look a little faint.\nyes \nnot at all","great, I knew you were one of the brave ones, thats something i feel in ma pee","Come on man, stop peeing your throusers. Only the one who tries is in position of having a chance to win", "ok, lets go back", "yes", "not", "back", None, "askready", "askscare", "opening", "1.png", None, False, "honest"],
+    "askready": ["ready to rumble? \n yes \n not at all", "great, so lets prepare our equipment:","what are you waiting for?, well anyways only die harten kommen in den garten so lets go", None, "yes","not", "back", None, "equip", "askready", "opening", "1.png", None, False, "honest"],
+    "equip": ["ok there are 10 Items you could take with you. But sadly our backpack is capeable of containing just 4 Items\n" + str(items), None, None, None, None, None, "back", None, "gotlight", None, "opening", "2.png", "gotlight", False, "honest"],
+    "gotlight": ["Its pretty dark in here. could you please switch on your flashlight?", None, None, None, "back", None, None, None, "equip", "flashlight", "startroom", "3.png", "startroom", False, "honest"],
+    "startroom": ["oh hey, the first room, 2 doors available, which one do choose? \nleft \nright","ok lets take the left one", "ok lets go right", "ok, lets go back", "left", "right", "back", None,"l1", "gotglasses", "equip", "4.png", None, False, "honest"],
+    "l1": ["oh a new room, stairs and a door, hm but where to go? \nstairs \nportal", "ok lets go upstairs", "ok lets enter the portal", "ok, lets go back", "upstairs", "door", "back", None, "upstairs", "read", "startroom", "5.png", None, False, "honest"],
+    "gotglasses": ["You see that snake over there? dont look in her eyes. If you do so youll freeze to stone. sunglases might protect you, got some?", None, None, None, "back", None, None, None, "startroom", None, None, "11.png", "r1", False, "honest"],
+    "r1": ["well, now we can pass safely the snake \npass", "ok lets pass", "ok, lets go back", None, "pass", None, "back", None, "gotrope", None, "startroom", "11.2.png", None, False, "honest"],
+    "gotrope": ["new room. oh we have to cross a pond full of acid to get to the next door. got your rope?", None, None, None, "back", None, None, None, "r1", None, None, "12.1.png", "rope", False, "honest"],
+    "rope": ["ok lets spann the rope across the pond. then pass the door \npass",  "ok lets pass", "ok, lets go back", None, "pass", None, "back", None, "troom", None, "r1", "12.2.png", None, False, "honest"],
+    "read": ["new room. I think this witch over there is too strong. oh a scroll, ill read it to you, ready? \n\tyes \n\tno ",  "ok ill start", "take ya time", "ok, lets go back", "yes", "no", "back", None, "potions", "read", "l1", "7.png", None, False, "honest"],
+    "potions": ["remember the hint. \nyou could take the...: \n\t'red'\n\t'green'", "take the red one", "take the green one", None, "red", "green", "back", None, "prefight", "death", "l1", "7.1.png", None, False, "honest"],
+    "upstairs": ["oh a scroll, ill read it to you, ready? \n\tyes \n\tno ", "ok ill start", "take ya time", "ok, lets go back", "yes", "no", "back", None, "upstairsread", "upstairs", "l1", "6.png", None, False, "honest"],
+    "upstairsread": ["I suppose its a hint. Keep it in mind.", None, None, None, None, "back", None, None, None, "upstairs", None, "6.1.png", "read", False, "honest"],
+    "troom": ["oh wow the treasure camber, take as much as you can. we have to bring it safely outside the cave to accomplish our mission\nback", None, "ok lets go back", None, None, "back", None, None, None, None, None, "8.png", None, False, "honest"],
+    "prefight": ["greaaaaaaat you got the right one, now youre superstrong, punch her on the nose so we can pass \nfight\n'nofight'", "ok, be aware of her left hook!!", "oh no, a pazifist, now shell kill you", None, "fight", "nofight", None, "back", "fight", "death", "potions", "7.2.png", None, False, "honest"],
+    "fight": ["nice one, now we can pass", None, None, None, None, None, None, "back", None, None, "prefight", "7.3.png", "troom", False, "honest"],
+    "death": [None, None, None, None, None, None, None, None, None, None, None, "10.png", None, False, "honest"],
+    "victory": [random.randint(0, len(["well done", "great job bro.", "thats it.", "mission accomplished", "congrats"]) - 1), None, None, None, None, None, None, None, None, None, None, "9.png", None, False, "honest"],
 }
 dict = scenes.get("start")
 room(dict[0], dict[1], dict[2], dict[3], dict[4], dict[5], dict[6], dict[7], dict[8], dict[9], dict[10], dict[11], dict[12], dict[13], dict[14])

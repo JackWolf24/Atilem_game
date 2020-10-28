@@ -4,11 +4,11 @@
 #Synonyme
 rope = ["rope", "30m rope",  "30m", "Rope"]
 glasses = ["sunglasses", "Sunglasses", "glasses", "Glasses"]
-potion = ["anti toxic potion", "potion", "bottle", "glass", "vessel", "antitoxic",  "antidote"]
+potion = ["antidote", "potion", "bottle", "glass", "vessel", "antitoxic",  "antidote"]
 light = ["flashlight", "light", "lamp", "Light", "Lamp", "Flashlight", "On", "on"]
-water = ["5L of water", "5L", "5l", "water", "blue wet"]
-apple = ["3 apples", "3 Apples", "apples", "Apples", "apple", "Apple"]
-cards = ["game of cards", "cardgame", "cards", "game"]
+water = ["water","5L of water", "5L", "5l",  "blue wet"]
+apple = ["apples", "3 apples", "3 Apples", "Apples", "apple", "Apple"]
+cards = ["cardgame", "game of cards", "cards", "game"]
 stairs = ["upstairs", "up", "stairs" ]
 yes = ["yes", "ys", "si", "jo", "jop"]
 no = ["no", "not", "nope", "noo"]
@@ -35,7 +35,7 @@ object = ["north", "south", "east", "west", "down", "up", "left", "right", "back
           "game", "cards", "game of cards", "cardgame",
           "fight", "hit", "punsh", "nofight",
           "pass",
-          "cheat"]
+          "cheat", "loose"]
 
 verbs = ["say", "shout", "mean", "tell",
          "go", "run", "hit", "rush", "hustle",
